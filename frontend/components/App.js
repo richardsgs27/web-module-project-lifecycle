@@ -3,12 +3,13 @@ import TodoList from './TodoList'
 import Form from './Form'
 import axios from 'axios'
 
+
 const URL = 'http://localhost:9000/api/todos'
 
 
 const initialState = {
   successMessage: '',
-  errorMessage: '',
+  errorMessage: 'Error: No Error!🥳 ', 
   todos: [],
   form: {
    name: '',
@@ -28,24 +29,35 @@ export default class App extends React.Component {
     .then(res => {
       this.setState({
         ...this.state,
-        todos: data,
-        successMessage: message
+        todos: res.data.data,
+        successMessage: res.data.message,
       })
     })
     .catch(err => {
-      this.setState({
-        ...this.state,
-        errorMessage: 'Error no error'
-       })
+    
+       
     })
   }
 
   handleAdd = (name) => {
-    const {todos} = this.state
-    const newTodo = {name: name, id: Date.now(), completed: false}
-    this.setState({ ...this.state, 
+    const newTodo = {
+      name: name, 
+      id: Date.now(), 
+      completed: false
+    }
+      axios.post(URL, newTodo)
+        .then(res => {
+          this.setState({
+            ...this.state,
+            todos: [...this.state.todos, res.data.data ]
+          })
+        })
+        .catch(err => {
+  
+        })
+    /*this.setState({ ...this.state, 
       todos: [...todos, newTodo]
-    })
+    }) */
   }  
   
   destroy = id => {
