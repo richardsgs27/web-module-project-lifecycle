@@ -59,15 +59,23 @@ export default class App extends React.Component {
       todos: [...todos, newTodo]
     }) */
   }  
-  
-  destroy = id => {
-    this.setState({ ...this.state, todos: this.state.todos.filter(todo => {
-      return (todo.completed === false);
-    })})
+  toggle = (id) => {
+    axios.patch(`${URL}/${id}`)
+      .then(res => {
+        this.setState({
+          ...this.state,
+          successMessage: res.data.message,
+          todos: this.state.quotes.map(todo => {
+            return todo.id == id ? res.data.data : todo
+          })
+        })
+      })
+      .catch(err => {
+        debugger
+      })
+    
   }
-
-  toggle = (clickedId) => {
-    this.setState({
+/*this.setState({
       ...this.state, todos: this.state.todos.map(todo => {
         if (todo.id === clickedId) {
           return {
@@ -76,9 +84,15 @@ export default class App extends React.Component {
         }
         return todo;
       })
-    })
+    }) */
+  
+  destroy = id => {
+    this.setState({ ...this.state, todos: this.state.todos.filter(todo => {
+      return (todo.completed === false);
+    })})
   }
 
+  
   render() {
     
 
