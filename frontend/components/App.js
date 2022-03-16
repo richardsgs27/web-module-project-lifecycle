@@ -1,27 +1,15 @@
 import React from 'react'
 import TodoList from './TodoList'
 import Form from './Form'
+import axios from 'axios'
 
-const todos = [
-  {
-    name: 'Organize Garage 🏚 ', 
-    id: 1528817077286,
-    completed: false
-  },
-  {
-    name: 'Bake Cookies 🍪 ', 
-    id: 1528817084358,
-    completed: false
-  },
-  {
-    name: 'Bake Chicken 🐔 ', 
-    id: 1528817084359,
-    completed: false
-  }
-]
+const URL = 'http://localhost:9000/api/todos'
+
 
 const initialState = {
-  todos,
+  successMessage: '',
+  errorMessage: '',
+  todos: [],
   form: {
    name: '',
     completed: false
@@ -30,6 +18,27 @@ const initialState = {
 
 export default class App extends React.Component {
   state = initialState
+
+  componentDidMount() {
+    this.getTodos()
+  }
+
+  getTodos = () => {
+    axios.get(URL)
+    .then(res => {
+      this.setState({
+        ...this.state,
+        todos: data,
+        successMessage: message
+      })
+    })
+    .catch(err => {
+      this.setState({
+        ...this.state,
+        errorMessage: 'Error no error'
+       })
+    })
+  }
 
   handleAdd = (name) => {
     const {todos} = this.state
@@ -59,13 +68,13 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log('props are', this.props)
-    console.log('state is', this.state)
+    
 
     const {todos} = this.state
    
     return (
       <div>
+        {this.state.errorMessage}
        <h2>Todos:</h2>
        <TodoList toggle={this.toggle} todos={todos}/>
        <Form handleAdd={this.handleAdd}/>
