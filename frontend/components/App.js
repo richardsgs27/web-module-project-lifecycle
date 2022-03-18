@@ -7,7 +7,7 @@ const URL = 'http://localhost:9000/api/todos'
 
 const initialState = {
   successMessage: '',
-  errorMessage: '🥳 ', 
+  errorMessage: 'Error: No Error!🥳 ', 
   todos: [],
   form: {
    name: '',
@@ -25,18 +25,10 @@ export default class App extends React.Component {
   getTodos = () => {
     axios.get(URL)
     .then(res => {
-      this.setState({
-        ...this.state,
-        todos: res.data.data,
-        successMessage: res.data.message,
-      })
+      this.setState({...this.state, todos: res.data.data, successMessage: res.data.message,})
     })
     .catch(err => {
-    this.setState({
-      ...this.state,
-      errorMessage: 'Disaster'
-    })
-       
+    this.setState({...this.state, errorMessage: err.response.data.message })
     })
   }
 
@@ -48,34 +40,24 @@ export default class App extends React.Component {
     }
       axios.post(URL, newTodo)
         .then(res => {
-          this.setState({
-            ...this.state,
-            todos: [...this.state.todos, res.data.data ]
-          })
+          this.setState({...this.state, todos: [...this.state.todos, res.data.data ]})
         })
         .catch(err => {
-          debugger
-          this.setState({
-            ...this.state, errorMessage: ''
-          })
+          this.setState({...this.state, errorMessage: err.response.data.message})
         })
   }  
 
   toggle = (id) => {
     axios.patch(`${URL}/${id}`)
       .then(res => {
-        this.setState({
-          ...this.state,
-          successMessage: res.data.message,
+        this.setState({...this.state, successMessage: res.data.message,
           todos: this.state.todos.map(todo => {
             return todo.id == id ? res.data.data : todo
           })
         })
       })
       .catch(err => {
-        this.setState({
-          ...thiis.state, errorMessage:''
-        })
+        this.setState({...thiis.state, errorMessage: err.response.data.message})
       })
 
   }
@@ -91,17 +73,13 @@ changeInput = (key, value) => {
 }
 
 render() {
-
-
   const {todos} = this.state
- 
   return (
     <div>
       {this.state.errorMessage}
      <h2>Todos:</h2>
      <TodoList toggle={this.toggle} todos={todos}/>
-     <Form onChange={this.changeInput} handleAdd={this.handleAdd}/>
-     
+     <Form onChange={this.changeInput} handleAdd={this.handleAdd}/>  
      <button onClick={this.destroy}>Clear</button>
     </div>
   )
