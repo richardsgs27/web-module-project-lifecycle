@@ -73,7 +73,9 @@ export default class App extends React.Component {
         })
       })
       .catch(err => {
-
+        this.setState({
+          ...thiis.state, errorMessage:''
+        })
       })
 
   }
