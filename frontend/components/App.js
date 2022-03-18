@@ -3,13 +3,11 @@ import TodoList from './TodoList'
 import Form from './Form'
 import axios from 'axios'
 
-
 const URL = 'http://localhost:9000/api/todos'
-
 
 const initialState = {
   successMessage: '',
-  errorMessage: 'Error: No Error!🥳 ', 
+  errorMessage: '🥳 ', 
   todos: [],
   form: {
    name: '',
@@ -34,7 +32,10 @@ export default class App extends React.Component {
       })
     })
     .catch(err => {
-    
+    this.setState({
+      ...this.state,
+      errorMessage: 'Disaster'
+    })
        
     })
   }
@@ -53,60 +54,55 @@ export default class App extends React.Component {
           })
         })
         .catch(err => {
-  
+          debugger
+          this.setState({
+            ...this.state, errorMessage: ''
+          })
         })
-    /*this.setState({ ...this.state, 
-      todos: [...todos, newTodo]
-    }) */
   }  
+
   toggle = (id) => {
     axios.patch(`${URL}/${id}`)
       .then(res => {
         this.setState({
           ...this.state,
           successMessage: res.data.message,
-          todos: this.state.quotes.map(todo => {
+          todos: this.state.todos.map(todo => {
             return todo.id == id ? res.data.data : todo
           })
         })
       })
       .catch(err => {
-        debugger
+
       })
-    
-  }
-/*this.setState({
-      ...this.state, todos: this.state.todos.map(todo => {
-        if (todo.id === clickedId) {
-          return {
-            ...todo,completed: !todo.completed
-          }
-        }
-        return todo;
-      })
-    }) */
-  
-  destroy = id => {
-    this.setState({ ...this.state, todos: this.state.todos.filter(todo => {
-      return (todo.completed === false);
-    })})
+
   }
 
-  
-  render() {
-    
-
-    const {todos} = this.state
-   
-    return (
-      <div>
-        {this.state.errorMessage}
-       <h2>Todos:</h2>
-       <TodoList toggle={this.toggle} todos={todos}/>
-       <Form handleAdd={this.handleAdd}/>
-       
-       <button onClick={this.destroy}>Clear</button>
-      </div>
-    )
-  }
+destroy = id => {
+  this.setState({ ...this.state, todos: this.state.todos.filter(todo => {
+    return (todo.completed === false);
+  })})
 }
+
+changeInput = (key, value) => {
+  this.setState({...this.state, form: {...this.state.form, [key]: value}})
+}
+
+render() {
+
+
+  const {todos} = this.state
+ 
+  return (
+    <div>
+      {this.state.errorMessage}
+     <h2>Todos:</h2>
+     <TodoList toggle={this.toggle} todos={todos}/>
+     <Form onChange={this.changeInput} handleAdd={this.handleAdd}/>
+     
+     <button onClick={this.destroy}>Clear</button>
+    </div>
+  )
+}
+}
+

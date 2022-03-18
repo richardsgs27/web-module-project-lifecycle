@@ -14,9 +14,9 @@ export default class Form extends React.Component {
     this.props.handleAdd(this.state.input)
   }
 
-  change = evt => {
+  change = (evt) => {
     this.setState({
-      ...this.state, input: evt.target.value
+      ...this.state, input: evt.target.value, 
     })
   }
 
